@@ -2,7 +2,7 @@
 set -euo pipefail
 
 if [[ $# -lt 3 ]]; then
-  echo "Usage: $0 <gemini|claude|codex> <prompt> <log_name>" >&2
+  echo "Usage: $0 <gemini|codex|claude> <prompt> <log_name>" >&2
   exit 2
 fi
 
@@ -20,14 +20,6 @@ markdown_path="logs/${log_name}.md"
 printf '%s\n' "$prompt" >"$prompt_path"
 
 case "$backend" in
-  claude)
-    cmd=(
-      claude
-      -p "$prompt"
-      --model claude-sonnet-4-6
-      --output-format stream-json
-    )
-    ;;
   gemini)
     cmd=(
       gemini
@@ -43,6 +35,14 @@ case "$backend" in
       --ephemeral
       --json
       "$prompt"
+    )
+    ;;
+  claude)
+    cmd=(
+      claude
+      -p "$prompt"
+      --model claude-sonnet-4-6
+      --output-format stream-json
     )
     ;;
   *)

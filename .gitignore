@@ -1,0 +1,3 @@
+subagent/logs/
+subagent/scripts/__pycache__/
+*.pyc
