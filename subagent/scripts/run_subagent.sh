@@ -20,19 +20,19 @@ markdown_path="logs/${log_name}.md"
 printf '%s\n' "$prompt" >"$prompt_path"
 
 case "$backend" in
-  gemini)
-    cmd=(
-      gemini
-      -y
-      -p "$prompt"
-      --output-format stream-json
-    )
-    ;;
   claude)
     cmd=(
       claude
       -p "$prompt"
       --model claude-sonnet-4-6
+      --output-format stream-json
+    )
+    ;;
+  gemini)
+    cmd=(
+      gemini
+      -y
+      -p "$prompt"
       --output-format stream-json
     )
     ;;
