@@ -16,7 +16,7 @@ Use this skill when the user wants an external agent CLI to execute a plan or pr
 4. Run the helper script:
 
 ```bash
-/home/jianjinx/.codex/skills/subagent/scripts/run_subagent.sh <backend> "<prompt>" <log_name>
+scripts/run_subagent.sh <backend> "<prompt>" <log_name>
 ```
 
 5. Wait for the command to exit. Do not send follow-up input or intervene while it runs.
