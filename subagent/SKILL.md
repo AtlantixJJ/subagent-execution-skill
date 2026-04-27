@@ -13,7 +13,7 @@ Use this skill when the user wants an external agent CLI to execute a plan or pr
 2. Confirm the plan file exists if the task references one.
 3. Build a prompt that points to the plan file and states the execution constraint:
    do the work described by the plan, write files directly, and exit when complete.
-4. Run the helper script:
+4. Run the helper script from this skill directory. The path below is relative to this `SKILL.md` file:
 
 ```bash
 scripts/run_subagent.sh <backend> "<prompt>" <log_name>
