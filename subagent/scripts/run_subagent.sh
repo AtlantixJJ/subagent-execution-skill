@@ -9,11 +9,13 @@ fi
 backend="$1"
 prompt="$2"
 log_name="$3"
+script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 
 mkdir -p logs
 log_path="logs/${log_name}.log"
 meta_path="logs/${log_name}.meta"
 prompt_path="logs/${log_name}.prompt.txt"
+markdown_path="logs/${log_name}.md"
 
 printf '%s\n' "$prompt" >"$prompt_path"
 
@@ -27,10 +29,21 @@ case "$backend" in
     )
     ;;
   claude)
-    cmd=(claude -p "$prompt" --model claude-sonnet-4-6)
+    cmd=(
+      claude
+      -p "$prompt"
+      --model claude-sonnet-4-6
+      --output-format stream-json
+    )
     ;;
   codex)
-    cmd=(codex exec --ephemeral "$prompt")
+    cmd=(
+      codex
+      exec
+      --ephemeral
+      --json
+      "$prompt"
+    )
     ;;
   *)
     echo "Unsupported backend: $backend" >&2
@@ -54,10 +67,18 @@ printf 'Prompt: %s\n' "$prompt_path"
   printf '\n'
 } >"$meta_path"
 
+set +e
 "${cmd[@]}" >"$log_path" 2>&1
+status=$?
+set -e
+
+"$script_dir/parse_log_to_markdown.sh" "$log_path" -o "$markdown_path"
 
 echo
 echo "Subagent finished. Review summary:"
+printf 'Markdown transcript: %s\n' "$markdown_path"
 git status --short
 echo
 git diff --stat
+
+exit "$status"

@@ -20,11 +20,12 @@ scripts/run_subagent.sh <backend> "<prompt>" <log_name>
 ```
 
 5. Wait for the command to exit. Do not send follow-up input or intervene while it runs.
-6. After completion, review the repo changes:
+6. The helper writes structured output to `logs/<log_name>.log` and automatically renders a markdown transcript to `logs/<log_name>.md`. The markdown file starts with the sibling `logs/<log_name>.prompt.txt` and `logs/<log_name>.meta` content, then appends the parsed transcript from the JSON log.
+7. After completion, review the repo changes:
    - inspect `git status --short`
    - inspect `git diff --stat`
    - inspect `git diff` for touched files
-7. Verify expected file creation if the plan promised new files.
+8. Verify expected file creation if the plan promised new files.
 
 ## Backend Mapping
 
