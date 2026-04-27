@@ -2,6 +2,10 @@
 
 Reusable Codex skill for running an external subagent CLI from a prompt or plan file and then reviewing the resulting git diff.
 
+## Dependencies
+
+- `python3` for rendering the markdown transcript from structured logs
+
 ## Install
 
 ```bash

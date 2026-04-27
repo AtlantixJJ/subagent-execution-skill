@@ -72,7 +72,7 @@ set +e
 status=$?
 set -e
 
-"$script_dir/parse_log_to_markdown.sh" "$log_path" -o "$markdown_path"
+python3 "$script_dir/parse_log_to_markdown.py" "$log_path" -o "$markdown_path"
 
 echo
 echo "Subagent finished. Review summary:"

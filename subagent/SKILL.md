@@ -20,7 +20,7 @@ scripts/run_subagent.sh <backend> "<prompt>" <log_name>
 ```
 
 5. Wait for the command to exit. Do not send follow-up input or intervene while it runs.
-6. The helper writes structured output to `logs/<log_name>.log` and automatically renders a markdown transcript to `logs/<log_name>.md`. The markdown file starts with the sibling `logs/<log_name>.prompt.txt` and `logs/<log_name>.meta` content, then appends the parsed transcript from the JSON log.
+6. The helper writes structured output to `logs/<log_name>.log` and automatically renders a markdown transcript to `logs/<log_name>.md` using `python3 scripts/parse_log_to_markdown.py`. The markdown file starts with the sibling `logs/<log_name>.prompt.txt` and `logs/<log_name>.meta` content, then appends the parsed transcript from the JSON log.
 7. After completion, review the repo changes:
    - inspect `git status --short`
    - inspect `git diff --stat`

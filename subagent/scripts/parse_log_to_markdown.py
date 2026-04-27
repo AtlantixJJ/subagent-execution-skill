@@ -1,31 +1,14 @@
-#!/usr/bin/env bash
-set -euo pipefail
+#!/usr/bin/env python3
+"""Convert structured agent logs to a markdown transcript.
 
-if [[ $# -lt 1 || $# -gt 3 ]]; then
-  echo "Usage: $0 <input_log> [-o <output_md>]" >&2
-  exit 2
-fi
+The output begins with sibling `.prompt.txt` and `.meta` files when present,
+then appends parsed content from the JSONL log.
+"""
 
-input_log="$1"
-output_path=""
-
-if [[ $# -ge 2 ]]; then
-  if [[ "$2" != "-o" && "$2" != "--output" ]]; then
-    echo "Usage: $0 <input_log> [-o <output_md>]" >&2
-    exit 2
-  fi
-  if [[ $# -ne 3 ]]; then
-    echo "Missing output path for $2" >&2
-    exit 2
-  fi
-  output_path="$3"
-fi
-
-python3 - "$input_log" "$output_path" <<'PY'
 from __future__ import annotations
 
+import argparse
 import json
-import sys
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -146,12 +129,7 @@ def parse_log_to_markdown(input_path: Path) -> str:
             ]
         )
 
-    out_lines.extend(
-        [
-            "## Transcript",
-            "",
-        ]
-    )
+    out_lines.extend(["## Transcript", ""])
 
     current_role: Optional[str] = None
     current_chunks: List[str] = []
@@ -202,12 +180,24 @@ def parse_log_to_markdown(input_path: Path) -> str:
 
 
 def main() -> None:
-    input_path = Path(sys.argv[1])
+    parser = argparse.ArgumentParser(
+        description="Parse a structured log file and output markdown."
+    )
+    parser.add_argument("input_log", type=Path, help="Path to source log file.")
+    parser.add_argument(
+        "-o",
+        "--output",
+        type=Path,
+        default=None,
+        help="Output markdown path. Defaults to <input>.md",
+    )
+    args = parser.parse_args()
+
+    input_path = args.input_log
     if not input_path.exists():
         raise FileNotFoundError(f"Input file does not exist: {input_path}")
 
-    output_arg = sys.argv[2] if len(sys.argv) > 2 else ""
-    output_path = Path(output_arg) if output_arg else input_path.with_suffix(".md")
+    output_path = args.output or input_path.with_suffix(".md")
     markdown = parse_log_to_markdown(input_path)
     output_path.write_text(markdown, encoding="utf-8")
     print(f"Wrote markdown to: {output_path}")
@@ -215,4 +205,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-PY
