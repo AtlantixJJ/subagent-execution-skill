@@ -5,9 +5,13 @@ Reusable Codex skill for running an external subagent CLI from a prompt or plan 
 ## Install
 
 ```bash
-python /home/jianjinx/.codex/skills/.system/skill-installer/scripts/install-skill-from-github.py \
-  --repo AtlantixJJ/subagent-execution-skill \
-  --path subagent
+codex
+```
+
+Then ask Codex:
+
+```text
+Install the skill from GitHub repo AtlantixJJ/subagent-execution-skill path subagent
 ```
 
 Restart Codex after installation so the skill is picked up.
