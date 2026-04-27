@@ -9,7 +9,7 @@ Use this skill when the user wants an external agent CLI to execute a plan or pr
 
 ## Workflow
 
-1. Identify the backend: `gemini`, `claude`, or `codex`.
+1. Identify the backend: `gemini`, `codex`, or `claude`.
 2. Confirm the plan file exists if the task references one.
 3. Build a prompt that points to the plan file and states the execution constraint:
    do the work described by the plan, write files directly, and exit when complete.
@@ -31,10 +31,10 @@ scripts/run_subagent.sh <backend> "<prompt>" <log_name>
 
 - `gemini`:
   `gemini -y -p "<prompt>"`
-- `claude`:
-  `claude -p "<prompt>" --model claude-sonnet-4-6`
 - `codex`:
   `codex exec --ephemeral "<prompt>"`
+- `claude`:
+  `claude -p "<prompt>" --model claude-sonnet-4-6`
 
 The helper script writes stdout and stderr to `logs/<log_name>.log`.
 
