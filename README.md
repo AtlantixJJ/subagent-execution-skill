@@ -11,12 +11,13 @@ This branch (`claude`) is tailored for installation with Claude Code. See the `c
 
 ## Install
 
-Clone the repository and copy the skill into your Claude skills directory:
+Clone directly into your Claude skills directory as `subagent`:
 
 ```bash
-git clone https://github.com/AtlantixJJ/subagent-execution-skill.git -b claude
-cp -r subagent-execution-skill/subagent ~/.claude/skills/
+git clone https://github.com/AtlantixJJ/subagent-execution-skill.git -b claude ~/.claude/skills/subagent
 ```
+
+To update later: `git -C ~/.claude/skills/subagent pull`
 
 Restart Claude Code after installation so the skill is picked up.
 
