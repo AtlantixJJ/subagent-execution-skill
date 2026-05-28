@@ -8,14 +8,12 @@ Reusable Codex skill for running an external subagent CLI from a prompt or plan 
 
 ## Install
 
+Clone directly into your Codex skills directory as `subagent`:
+
 ```bash
-codex
+git clone https://github.com/AtlantixJJ/subagent-execution-skill.git -b codex ~/.codex/skills/subagent
 ```
 
-Then ask Codex:
-
-```text
-Install the skill from GitHub repo AtlantixJJ/subagent-execution-skill path subagent
-```
+To update later: `git -C ~/.codex/skills/subagent pull`
 
 Restart Codex after installation so the skill is picked up.
