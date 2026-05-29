@@ -5,7 +5,7 @@ description: Run an external subagent from a plan file or task prompt using the 
 
 # Subagent Runner
 
-Use this skill when the user wants an external agent CLI to execute a plan or prompt while Codex stays passive during execution.
+Use this skill when the user wants an external agent CLI to execute a plan or prompt while Gemini stays passive during execution.
 
 ## Workflow
 
@@ -40,7 +40,7 @@ The helper script writes stdout and stderr to `logs/<log_name>.log`.
 
 ## Constraints
 
-- Do not use Codex `spawn_agent` for this workflow. This skill is for external agent CLIs.
+- Do not use Gemini's `invoke_agent` tool for this workflow. This skill is for external agent CLIs that operate independently of the current session's tool execution flow.
 - Do not intervene after launch. Wait until the subprocess exits.
 - Do not revert unrelated user changes while reviewing the diff.
 - If the referenced plan file does not exist, stop and report that clearly.
