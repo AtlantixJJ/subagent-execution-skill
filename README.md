@@ -37,4 +37,4 @@ SUBAGENT: execute plan.md using claude backend
 
 ## Supported Backends
 
-The default backend is `claude`. You can also specify `gemini` or `codex`.
+The default backend is `claude`. You can also specify `agy` or `codex`.
