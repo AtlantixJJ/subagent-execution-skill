@@ -21,11 +21,13 @@ printf '%s\n' "$prompt" >"$prompt_path"
 
 case "$backend" in
   agy)
+    # agy (>=1.0.x) has no JSON/stream output mode; print mode emits plain text.
+    # Use --dangerously-skip-permissions for non-interactive auto-approval.
     cmd=(
       agy
-      -y
+      --dangerously-skip-permissions
+      --print-timeout 30m
       -p "$prompt"
-      --output-format stream-json
     )
     ;;
   codex)

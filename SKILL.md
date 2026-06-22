@@ -32,7 +32,9 @@ Logs are written relative to the current directory, so always `cd` to the projec
 ## Backend Mapping
 
 - `agy`:
-  `agy -y -p "<prompt>"`
+  `agy --dangerously-skip-permissions --print-timeout 30m -p "<prompt>"`
+  (agy >=1.0.x has no JSON/stream output mode; print mode emits plain text,
+  which the parser includes verbatim under the Transcript section.)
 - `codex`:
   `codex exec --ephemeral "<prompt>"`
 - `claude` (default):
