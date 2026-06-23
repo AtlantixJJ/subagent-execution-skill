@@ -5,7 +5,7 @@ description: Run an external subagent from a plan file or task prompt using the 
 
 # Subagent Runner
 
-Use this skill when the user wants an external agent CLI to execute a plan or prompt while Claude stays passive during execution.
+Use this skill when the user wants an external agent CLI to execute a plan or prompt while Antigravity stays passive during execution.
 
 ## Workflow
 
@@ -16,7 +16,7 @@ Use this skill when the user wants an external agent CLI to execute a plan or pr
 4. Run the helper script from the **project root** (the repository you are working in, not the skill directory):
 
 ```bash
-~/.claude/skills/subagent/scripts/run_subagent.sh <backend> "<prompt>" <log_name>
+~/.gemini/config/skills/subagent-execution-skill/scripts/run_subagent.sh <backend> "<prompt>" <log_name>
 ```
 
 Logs are written relative to the current directory, so always `cd` to the project root before invoking the script.
@@ -44,7 +44,7 @@ The helper script writes stdout and stderr to `logs/<log_name>.log`.
 
 ## Constraints
 
-- Do not use Claude Code's `Agent` tool for this workflow. This skill is for external agent CLIs.
+- Do not use Antigravity's `invoke_subagent` tool for this workflow. This skill is for external agent CLIs.
 - Do not intervene after launch. Wait until the subprocess exits.
 - Do not revert unrelated user changes while reviewing the diff.
 - If the referenced plan file does not exist, stop and report that clearly.
