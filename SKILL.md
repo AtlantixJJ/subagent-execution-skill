@@ -1,6 +1,6 @@
 ---
 name: cli-subagent
-description: Run an external subagent from a plan file or task prompt using the Gemini CLI, Claude CLI, or Codex CLI, then wait for it to finish without intervening and review the resulting file changes with git diff. Use when the user asks to execute a plan with a subagent, mentions SUBAGENT, or wants a passive delegated run followed by a diff review inside this repository.
+description: Run an external subagent from a plan file or task prompt using the agy CLI, Claude CLI, or Codex CLI, then wait for it to finish without intervening and review the resulting file changes with git diff. Use when the user asks to execute a plan with a subagent, mentions SUBAGENT, or wants a passive delegated run followed by a diff review inside this repository.
 ---
 
 # Subagent Runner
@@ -9,15 +9,17 @@ Use this skill when the user wants an external agent CLI to execute a plan or pr
 
 ## Workflow
 
-1. Identify the backend: `gemini`, `codex`, or `claude`.
+1. Identify the backend: `agy`, `codex` (default), or `claude`.
 2. Confirm the plan file exists if the task references one.
 3. Build a prompt that points to the plan file and states the execution constraint:
    do the work described by the plan, write files directly, and exit when complete.
-4. Run the helper script with `bash` from this skill directory. The path below is relative to this `SKILL.md` file:
+4. Run the helper script with `bash` from the **project root** (the repository you are working in, not the skill directory):
 
 ```bash
-bash scripts/run_subagent.sh <backend> "<prompt>" <log_name>
+~/.codex/skills/cli-subagent/scripts/run_subagent.sh <backend> "<prompt>" <log_name>
 ```
+
+Logs are written relative to the current directory, so always `cd` to the project root before invoking the script.
 
 5. Wait for the command to exit. Do not send follow-up input or intervene while it runs.
 6. The helper writes structured output to `logs/<log_name>.log` and automatically renders a markdown transcript to `logs/<log_name>.md` using `python3 scripts/parse_log_to_markdown.py`. The markdown file starts with the sibling `logs/<log_name>.prompt.txt` and `logs/<log_name>.meta` content, then appends the parsed transcript from the JSON log.
@@ -29,9 +31,11 @@ bash scripts/run_subagent.sh <backend> "<prompt>" <log_name>
 
 ## Backend Mapping
 
-- `gemini`:
-  `gemini -y -p "<prompt>"`
-- `codex`:
+- `agy`:
+  `agy --dangerously-skip-permissions --print-timeout 30m -p "<prompt>"`
+  (agy >=1.0.x has no JSON/stream output mode; print mode emits plain text,
+  which the parser includes verbatim under the Transcript section.)
+- `codex` (default):
   `codex exec --ephemeral "<prompt>"`
 - `claude`:
   `claude -p "<prompt>" --model claude-sonnet-4-6`

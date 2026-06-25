@@ -131,10 +131,24 @@ def parse_log_to_markdown(input_path: Path) -> str:
 
     out_lines.extend(["## Transcript", ""])
 
+    raw_text = input_path.read_text(encoding="utf-8")
+
+    # Plain-text fallback: some backends (e.g. agy print mode) emit a plain-text
+    # response rather than JSONL records. If no JSON record lines are present,
+    # include the raw output verbatim instead of dropping it.
+    has_json_records = any(
+        line.strip().startswith("{") for line in raw_text.splitlines()
+    )
+    if not has_json_records:
+        body = raw_text.rstrip()
+        if body:
+            out_lines.extend(["```text", body, "```", ""])
+        return "\n".join(out_lines).rstrip() + "\n"
+
     current_role: Optional[str] = None
     current_chunks: List[str] = []
 
-    for raw_line in input_path.read_text(encoding="utf-8").splitlines():
+    for raw_line in raw_text.splitlines():
         line = raw_line.strip()
         if not line or not line.startswith("{"):
             continue

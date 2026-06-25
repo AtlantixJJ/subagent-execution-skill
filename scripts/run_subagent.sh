@@ -2,7 +2,7 @@
 set -euo pipefail
 
 if [[ $# -lt 3 ]]; then
-  echo "Usage: $0 <gemini|codex|claude> <prompt> <log_name>" >&2
+  echo "Usage: $0 <agy|codex|claude> <prompt> <log_name>" >&2
   exit 2
 fi
 
@@ -20,12 +20,14 @@ markdown_path="logs/${log_name}.md"
 printf '%s\n' "$prompt" >"$prompt_path"
 
 case "$backend" in
-  gemini)
+  agy)
+    # agy (>=1.0.x) has no JSON/stream output mode; print mode emits plain text.
+    # Use --dangerously-skip-permissions for non-interactive auto-approval.
     cmd=(
-      gemini
-      -y
+      agy
+      --dangerously-skip-permissions
+      --print-timeout 30m
       -p "$prompt"
-      --output-format stream-json
     )
     ;;
   codex)
