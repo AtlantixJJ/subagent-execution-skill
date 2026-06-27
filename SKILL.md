@@ -11,21 +11,32 @@ Use this skill when the user wants an external agent CLI to execute a plan or pr
 
 1. Identify the backend: `gemini`, `claude`, or `codex`.
 2. Confirm the plan file exists if the task references one.
-3. Build a prompt that points to the plan file and states the execution constraint:
+3. Determine the working directory the subagent must run in — the repository
+   root that contains the plan file and the files to be changed. This is
+   required: without it the subagent inherits the skill directory as its cwd and
+   wastes the run "searching for plan.md".
+4. Build a prompt that points to the plan file and states the execution constraint:
    do the work described by the plan, write files directly, and exit when complete.
-4. Run the helper script with `bash` from this skill directory. The path below is relative to this `SKILL.md` file:
+   Reference the plan with an absolute path so it resolves regardless of cwd.
+5. Run the helper script with `bash` from this skill directory, passing the
+   working directory as the fourth argument. The script path below is relative
+   to this `SKILL.md` file; `<work_dir>` should be an absolute path:
 
 ```bash
-bash scripts/run_subagent.sh <backend> "<prompt>" <log_name>
+bash scripts/run_subagent.sh <backend> "<prompt>" <log_name> <work_dir>
 ```
 
-5. Wait for the command to exit. Do not send follow-up input or intervene while it runs.
-6. The helper writes structured output to `logs/<log_name>.log` and automatically renders a markdown transcript to `logs/<log_name>.md` using `python3 scripts/parse_log_to_markdown.py`. The markdown file starts with the sibling `logs/<log_name>.prompt.txt` and `logs/<log_name>.meta` content, then appends the parsed transcript from the JSON log.
-7. After completion, review the repo changes:
-   - inspect `git status --short`
-   - inspect `git diff --stat`
-   - inspect `git diff` for touched files
-8. Verify expected file creation if the plan promised new files.
+If `<work_dir>` is omitted it defaults to the current `$PWD`. Logs are always
+written under the invocation directory's `logs/`, while the subagent command runs
+inside `<work_dir>`.
+
+6. Wait for the command to exit. Do not send follow-up input or intervene while it runs.
+7. The helper writes structured output to `logs/<log_name>.log` and automatically renders a markdown transcript to `logs/<log_name>.md` using `python3 scripts/parse_log_to_markdown.py`. The markdown file starts with the sibling `logs/<log_name>.prompt.txt` and `logs/<log_name>.meta` content, then appends the parsed transcript from the JSON log.
+8. After completion, review the repo changes (the helper runs these against `<work_dir>`):
+   - inspect `git -C <work_dir> status --short`
+   - inspect `git -C <work_dir> diff --stat`
+   - inspect `git -C <work_dir> diff` for touched files
+9. Verify expected file creation if the plan promised new files.
 
 ## Backend Mapping
 
