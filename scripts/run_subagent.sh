@@ -2,7 +2,7 @@
 set -euo pipefail
 
 if [[ $# -lt 3 ]]; then
-  echo "Usage: $0 <agy|codex|claude> <prompt> <log_name>" >&2
+  echo "Usage: $0 <agy|codex|claude|hermes> <prompt> <log_name>" >&2
   exit 2
 fi
 
@@ -45,6 +45,15 @@ case "$backend" in
       -p "$prompt"
       --model claude-sonnet-4-6
       --output-format stream-json
+    )
+    ;;
+  hermes)
+    # hermes oneshot mode prints only the final response text (no JSON/stream
+    # mode); approvals are auto-bypassed. The parser's plain-text fallback
+    # includes the output verbatim under the Transcript section.
+    cmd=(
+      hermes
+      -z "$prompt"
     )
     ;;
   *)

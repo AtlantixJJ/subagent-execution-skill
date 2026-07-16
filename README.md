@@ -37,4 +37,4 @@ SUBAGENT: execute plan.md using codex backend
 
 ## Supported Backends
 
-The default backend is `codex`. You can also specify `agy` or `claude`.
+The default backend is `codex`. You can also specify `agy`, `claude`, or `hermes`.

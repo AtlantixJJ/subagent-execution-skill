@@ -1,6 +1,6 @@
 ---
 name: cli-subagent
-description: Run an external subagent from a plan file or task prompt using the agy CLI, Claude CLI, or Codex CLI, then wait for it to finish without intervening and review the resulting file changes with git diff. Use when the user asks to execute a plan with a subagent, mentions SUBAGENT, or wants a passive delegated run followed by a diff review inside this repository.
+description: Run an external subagent from a plan file or task prompt using the agy CLI, Claude CLI, Codex CLI, or Hermes CLI, then wait for it to finish without intervening and review the resulting file changes with git diff. Use when the user asks to execute a plan with a subagent, mentions SUBAGENT, or wants a passive delegated run followed by a diff review inside this repository.
 ---
 
 # Subagent Runner
@@ -9,7 +9,7 @@ Use this skill when the user wants an external agent CLI to execute a plan or pr
 
 ## Workflow
 
-1. Identify the backend: `agy`, `codex` (default), or `claude`.
+1. Identify the backend: `agy`, `codex` (default), `claude`, or `hermes`.
 2. Confirm the plan file exists if the task references one.
 3. Build a prompt that points to the plan file and states the execution constraint:
    do the work described by the plan, write files directly, and exit when complete.
@@ -39,6 +39,11 @@ Logs are written relative to the current directory, so always `cd` to the projec
   `codex exec --ephemeral "<prompt>"`
 - `claude`:
   `claude -p "<prompt>" --model claude-sonnet-4-6`
+- `hermes`:
+  `hermes -z "<prompt>"`
+  (oneshot mode prints only the final response text; no JSON/stream output
+  mode, so the parser's plain-text fallback includes it verbatim under the
+  Transcript section. Approvals are auto-bypassed in oneshot mode.)
 
 The helper script writes stdout and stderr to `logs/<log_name>.log`.
 
