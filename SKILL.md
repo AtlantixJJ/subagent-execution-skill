@@ -1,6 +1,6 @@
 ---
 name: cli-subagent
-description: Run an external subagent from a plan file or task prompt using the Gemini CLI, Claude CLI, or Codex CLI, then wait for it to finish without intervening and review the resulting file changes with git diff. Use when the user asks to execute a plan with a subagent, mentions SUBAGENT, or wants a passive delegated run followed by a diff review inside this repository.
+description: Run an external subagent from a plan file or task prompt using the Gemini CLI, Claude CLI, Codex CLI, or Hermes CLI, then wait for it to finish without intervening and review the resulting file changes with git diff. Use when the user asks to execute a plan with a subagent, mentions SUBAGENT, or wants a passive delegated run followed by a diff review inside this repository.
 ---
 
 # Subagent Runner
@@ -9,7 +9,7 @@ Use this skill when the user wants an external agent CLI to execute a plan or pr
 
 ## Workflow
 
-1. Identify the backend: `gemini`, `claude`, or `codex`.
+1. Identify the backend: `gemini`, `claude`, `codex`, or `hermes`.
 2. Confirm the plan file exists if the task references one.
 3. Determine the working directory the subagent must run in — the repository
    root that contains the plan file and the files to be changed. This is
@@ -46,6 +46,11 @@ inside `<work_dir>`.
   `claude -p "<prompt>" --model claude-sonnet-4-6`
 - `codex`:
   `codex exec --ephemeral "<prompt>"`
+- `hermes`:
+  `hermes -z "<prompt>"`
+  (oneshot mode prints only the final response text; no JSON/stream output
+  mode, so the parser's plain-text fallback includes it verbatim under the
+  Transcript section. Approvals are auto-bypassed in oneshot mode.)
 
 The helper script writes stdout and stderr to `logs/<log_name>.log`.
 

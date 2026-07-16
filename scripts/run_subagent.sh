@@ -2,7 +2,7 @@
 set -euo pipefail
 
 if [[ $# -lt 3 ]]; then
-  echo "Usage: $0 <gemini|claude|codex> <prompt> <log_name> [work_dir]" >&2
+  echo "Usage: $0 <gemini|claude|codex|hermes> <prompt> <log_name> [work_dir]" >&2
   exit 2
 fi
 
@@ -53,6 +53,15 @@ case "$backend" in
       --ephemeral
       --json
       "$prompt"
+    )
+    ;;
+  hermes)
+    # hermes oneshot mode prints only the final response text (no JSON/stream
+    # mode); approvals are auto-bypassed. The parser's plain-text fallback
+    # includes the output verbatim under the Transcript section.
+    cmd=(
+      hermes
+      -z "$prompt"
     )
     ;;
   *)
