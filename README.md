@@ -18,7 +18,7 @@ All branches support delegating work to any of these external agent CLIs:
 
 - `gemini` — `gemini -y -p "<prompt>" --output-format stream-json`
 - `codex` — `codex exec --ephemeral "<prompt>"`
-- `claude` — `claude -p "<prompt>" --model claude-sonnet-4-6 --output-format stream-json`
+- `claude` — `claude -p "<prompt>" --model claude-sonnet-5 --output-format stream-json`
 - `hermes` — `hermes -z "<prompt>"`
 
 ## Dependencies
