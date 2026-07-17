@@ -11,23 +11,25 @@ Use this skill when the user wants an external agent CLI to execute a plan or pr
 
 1. Identify the backend: `agy`, `codex`, `claude` (default), or `hermes`.
 2. Confirm the plan file exists if the task references one.
-3. Build a prompt that points to the plan file and states the execution constraint:
+3. Determine the working directory the subagent must run in — the repository
+   root that contains the plan file and the files to be changed.
+4. Build a prompt that points to the plan file and states the execution constraint:
    do the work described by the plan, write files directly, and exit when complete.
-4. Run the helper script from the **project root** (the repository you are working in, not the skill directory):
+4. Use an absolute plan path when the runner is invoked outside the project root.
+5. Run the helper script with `bash`, passing the working directory as the fourth
+   argument when needed:
 
 ```bash
-~/.gemini/config/skills/subagent-execution-skill/scripts/run_subagent.sh <backend> "<prompt>" <log_name>
+bash ~/.gemini/config/skills/subagent-execution-skill/scripts/run_subagent.sh <backend> "<prompt>" <log_name> [work_dir]
 ```
 
-Logs are written relative to the current directory, so always `cd` to the project root before invoking the script.
+If `work_dir` is omitted it defaults to the current `$PWD`. Logs are written
+under the invocation directory, while the subagent runs inside `work_dir`.
 
-5. Wait for the command to exit. Do not send follow-up input or intervene while it runs.
-6. The helper writes structured output to `logs/<log_name>.log` and automatically renders a markdown transcript to `logs/<log_name>.md` using `python3 scripts/parse_log_to_markdown.py`. The markdown file starts with the sibling `logs/<log_name>.prompt.txt` and `logs/<log_name>.meta` content, then appends the parsed transcript from the JSON log.
-7. After completion, review the repo changes:
-   - inspect `git status --short`
-   - inspect `git diff --stat`
-   - inspect `git diff` for touched files
-8. Verify expected file creation if the plan promised new files.
+6. Wait for the command to exit. Do not send follow-up input or intervene while it runs.
+7. The helper writes structured output to `logs/<log_name>.log` and automatically renders a markdown transcript to `logs/<log_name>.md` using `python3 scripts/parse_log_to_markdown.py`.
+8. After completion, review the repo changes using `git -C <work_dir> status --short`, `git -C <work_dir> diff --stat`, and `git -C <work_dir> diff`.
+9. Verify expected file creation if the plan promised new files.
 
 ## Backend Mapping
 

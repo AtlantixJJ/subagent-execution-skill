@@ -35,6 +35,13 @@ or
 SUBAGENT: execute plan.md using claude backend
 ```
 
+The runner accepts an optional fourth argument for the repository where the
+subagent should work. This is useful when invoking it from the skill directory:
+
+```bash
+bash scripts/run_subagent.sh codex "Execute /abs/path/plan.md" run-001 /abs/path/project
+```
+
 ## Supported Backends
 
 The default backend is `claude`. You can also specify `agy`, `codex`, or `hermes`.
