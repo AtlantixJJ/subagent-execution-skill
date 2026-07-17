@@ -32,7 +32,7 @@ bash scripts/run_subagent.sh <backend> "<prompt>" <log_name>
 - `gemini`:
   `gemini -y -p "<prompt>"`
 - `claude`:
-  `claude -p "<prompt>" --model claude-sonnet-4-6`
+  `claude -p "<prompt>" --model claude-sonnet-5`
 - `codex`:
   `codex exec --ephemeral "<prompt>"`
 - `hermes`:

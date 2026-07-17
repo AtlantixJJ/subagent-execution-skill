@@ -34,7 +34,7 @@ case "$backend" in
     cmd=(
       claude
       -p "$prompt"
-      --model claude-sonnet-4-6
+      --model claude-sonnet-5
       --output-format stream-json
       --verbose
       --dangerously-skip-permissions
