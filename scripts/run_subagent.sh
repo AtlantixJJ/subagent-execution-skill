@@ -24,8 +24,27 @@ log_path="$log_root/${log_name}.log"
 meta_path="$log_root/${log_name}.meta"
 prompt_path="$log_root/${log_name}.prompt.txt"
 markdown_path="$log_root/${log_name}.md"
+status_path="$log_root/${log_name}.status"
 
-printf '%s\n' "$prompt" >"$prompt_path"
+# Backend logs are progress transcripts. Lifecycle state is kept separately so
+# callers do not mistake an API response or stream event for process completion.
+write_status() {
+  local state="$1" exit_code="${2:-}" render_code="${3:-}" tmp_path
+  tmp_path="${status_path}.$$"
+  {
+    printf 'state=%s\n' "$state"
+    printf 'pid=%s\n' "$$"
+    printf 'backend=%s\n' "$backend"
+    printf 'log=%s\n' "$log_path"
+    printf 'started_at=%s\n' "$started_at"
+    [ -n "$exit_code" ] && printf 'subagent_exit_code=%s\n' "$exit_code"
+    [ -n "$render_code" ] && printf 'transcript_exit_code=%s\n' "$render_code"
+    printf 'updated_at=%s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+  } >"$tmp_path"
+  mv -f -- "$tmp_path" "$status_path"
+}
+
+started_at="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 
 case "$backend" in
   agy)
@@ -74,10 +93,14 @@ case "$backend" in
     ;;
 esac
 
+write_status running
+printf '%s\n' "$prompt" >"$prompt_path"
+
 printf 'Running:'
 printf ' %q' "${cmd[@]}"
 printf '\nWork dir: %s\n' "$work_dir"
 printf 'Log: %s\n' "$log_path"
+printf 'Status: %s\n' "$status_path"
 printf 'Meta: %s\n' "$meta_path"
 printf 'Prompt: %s\n' "$prompt_path"
 
@@ -85,6 +108,7 @@ printf 'Prompt: %s\n' "$prompt_path"
   printf 'backend=%s\n' "$backend"
   printf 'work_dir=%s\n' "$work_dir"
   printf 'log=%s\n' "$log_path"
+  printf 'status_file=%s\n' "$status_path"
   printf 'prompt_file=%s\n' "$prompt_path"
   printf 'cmd='
   printf '%q ' "${cmd[@]}"
@@ -96,13 +120,28 @@ set +e
 status=$?
 set -e
 
+write_status exited "$status"
+
+set +e
 python3 "$script_dir/parse_log_to_markdown.py" "$log_path" -o "$markdown_path"
+render_status=$?
+set -e
+
+if [[ "$status" -eq 0 && "$render_status" -eq 0 ]]; then
+  write_status complete "$status" "$render_status"
+else
+  write_status failed "$status" "$render_status"
+fi
 
 echo
 echo "Subagent finished. Review summary:"
 printf 'Markdown transcript: %s\n' "$markdown_path"
+printf 'Status: %s\n' "$status_path"
 git -C "$work_dir" status --short
 echo
 git -C "$work_dir" diff --stat
 
-exit "$status"
+if [[ "$status" -ne 0 ]]; then
+  exit "$status"
+fi
+exit "$render_status"

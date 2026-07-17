@@ -27,8 +27,16 @@ If `work_dir` is omitted it defaults to the current `$PWD`. Logs are written
 under the invocation directory, while the subagent runs inside `work_dir`.
 
 6. Wait for the command to exit. Do not send follow-up input or intervene while it runs.
-7. The helper writes structured output to `logs/<log_name>.log` and automatically renders a markdown transcript to `logs/<log_name>.md` using `python3 scripts/parse_log_to_markdown.py`.
-8. After completion, review the repo changes using `git -C <work_dir> status --short`, `git -C <work_dir> diff --stat`, and `git -C <work_dir> diff`.
+7. The helper writes backend output to `logs/<log_name>.log`, lifecycle state to
+   `logs/<log_name>.status`, and automatically renders a markdown transcript to
+   `logs/<log_name>.md` using `python3 scripts/parse_log_to_markdown.py`. The status sidecar is
+   authoritative: `state=running` means the subprocess has not exited; `state=complete` means
+   both the subprocess and transcript renderer succeeded; `state=failed` means at least one
+   failed. Never infer completion from backend log lines such as API responses, stream-complete
+   events, or tool results.
+8. After the runner exits, confirm the sidecar says `state=complete`, then review the repo changes
+   using `git -C <work_dir> status --short`, `git -C <work_dir> diff --stat`, and
+   `git -C <work_dir> diff`.
 9. Verify expected file creation if the plan promised new files.
 
 ## Backend Mapping
