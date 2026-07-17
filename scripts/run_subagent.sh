@@ -39,11 +39,15 @@ case "$backend" in
     )
     ;;
   claude)
+    # --verbose is required by the claude CLI when combining -p with
+    # --output-format stream-json; skip permissions for non-interactive writes.
     cmd=(
       claude
       -p "$prompt"
       --model claude-sonnet-4-6
       --output-format stream-json
+      --verbose
+      --dangerously-skip-permissions
     )
     ;;
   codex)
@@ -88,7 +92,7 @@ printf 'Prompt: %s\n' "$prompt_path"
 } >"$meta_path"
 
 set +e
-(cd -- "$work_dir" && "${cmd[@]}") >"$log_path" 2>&1
+(cd -- "$work_dir" && "${cmd[@]}") >"$log_path" 2>&1 </dev/null
 status=$?
 set -e
 

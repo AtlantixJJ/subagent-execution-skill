@@ -50,7 +50,11 @@ inside `<work_dir>`.
   `hermes -z "<prompt>"`
   (oneshot mode prints only the final response text; no JSON/stream output
   mode, so the parser's plain-text fallback includes it verbatim under the
-  Transcript section. Approvals are auto-bypassed in oneshot mode.)
+  Transcript section. Approvals are auto-bypassed in oneshot mode.
+  CAUTION: on long multi-step prompts hermes's tool-call formatting can
+  degrade mid-run — tool calls leak into the output as text and it exits 0
+  having changed nothing. Keep hermes dispatches small and single-purpose,
+  and verify file changes rather than trusting exit code or its claims.)
 
 The helper script writes stdout and stderr to `logs/<log_name>.log`.
 
