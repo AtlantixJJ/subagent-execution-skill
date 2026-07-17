@@ -42,6 +42,14 @@ subagent should work. This is useful when invoking it from the skill directory:
 bash scripts/run_subagent.sh codex "Execute /abs/path/plan.md" run-001 /abs/path/project
 ```
 
+## Completion detection
+
+Backend logs are progress transcripts and may contain messages that sound like completion while
+the agent is still running. The runner writes `logs/<log_name>.status`; wait for the runner process
+to exit and require `state=complete` before consuming the result. `state=running` is still active,
+and `state=failed` requires investigation. API responses, stream events, and tool results in the
+backend log are not completion signals.
+
 ## Supported Backends
 
 The default backend is `codex`. You can also specify `agy`, `claude`, or `hermes`.
