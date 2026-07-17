@@ -38,7 +38,7 @@ Logs are written relative to the current directory, so always `cd` to the projec
 - `codex`:
   `codex exec --ephemeral "<prompt>"`
 - `claude` (default):
-  `claude -p "<prompt>" --model claude-sonnet-4-6`
+  `claude -p "<prompt>" --model claude-sonnet-5`
 - `hermes`:
   `hermes -z "<prompt>"`
   (oneshot mode prints only the final response text; no JSON/stream output
